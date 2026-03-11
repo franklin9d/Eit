@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>موسوعة أكلات العالم</title>
+  <meta name="description" content="موقع عربي احترافي يجمع دول العالم مع 10 أكلات ووصفات لكل دولة تقريبًا، مع بحث سريع وخطوات التحضير وروابط فيديو." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">🍽️</div>
+        <div>
+          <h1>موسوعة أكلات العالم</h1>
+          <p>كل الدول • وصفات • بحث سريع • جاهز لـ Vercel</p>
+        </div>
+      </div>
+
+      <div class="search-panel">
+        <label for="searchInput">ابحث عن دولة أو كود دولة</label>
+        <input id="searchInput" type="search" placeholder="مثال: العراق / Italy / JP" />
+      </div>
+
+      <div class="filters">
+        <label for="regionFilter">تصفية حسب الإقليم</label>
+        <select id="regionFilter">
+          <option value="">كل الأقاليم</option>
+        </select>
+      </div>
+
+      <div class="stats">
+        <div class="stat-card">
+          <strong id="countriesCount">0</strong>
+          <span>الدول والمناطق</span>
+        </div>
+        <div class="stat-card">
+          <strong id="recipesCount">0</strong>
+          <span>الوصفات</span>
+        </div>
+      </div>
+
+      <div class="side-note">
+        <p>مهم: بعض الدول مغطاة بأطباق محلية مباشرة، وبعضها بأطباق ممثلة للإقليم الغذائي الأقرب لها حتى تبقى التغطية شاملة.</p>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <section class="hero">
+        <div>
+          <span class="eyebrow">نسخة ثابتة داخلية</span>
+          <h2>استعرض دول العالم واختر وصفاتك بسهولة</h2>
+          <p>واجهة عربية احترافية، وصفات محفوظة داخل المشروع نفسه، وبحث فوري وروابط فيديو وبحث خارجي عند الحاجة.</p>
+        </div>
+        <div class="hero-actions">
+          <button id="randomBtn" class="btn primary">اقترح عليّ دولة</button>
+          <button id="themeBtn" class="btn ghost">تبديل الوضع</button>
+        </div>
+      </section>
+
+      <section class="grid-toolbar">
+        <p id="resultsText">جارِ تحميل البيانات…</p>
+      </section>
+
+      <section id="countriesGrid" class="countries-grid"></section>
+    </main>
+  </div>
+
+  <div id="countryModal" class="modal hidden">
+    <div class="modal-backdrop" data-close="true"></div>
+    <div class="modal-panel">
+      <button class="modal-close" id="closeModalBtn" aria-label="إغلاق">✕</button>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <template id="countryCardTemplate">
+    <article class="country-card">
+      <div class="country-head">
+        <div class="flag"></div>
+        <div>
+          <h3 class="country-name"></h3>
+          <p class="country-sub"></p>
+        </div>
+      </div>
+      <p class="country-summary"></p>
+      <div class="country-meta"></div>
+      <button class="btn primary full">فتح الوصفات</button>
+    </article>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>

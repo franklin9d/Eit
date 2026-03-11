@@ -1,0 +1,99 @@
+
+:root{
+  --bg:#0b1020;
+  --bg-soft:#111936;
+  --panel:rgba(17,25,54,.88);
+  --panel-2:rgba(255,255,255,.06);
+  --text:#eef2ff;
+  --muted:#b7c0e3;
+  --border:rgba(255,255,255,.08);
+  --brand:#7c9cff;
+  --brand-2:#59d8c5;
+  --shadow:0 18px 60px rgba(0,0,0,.25);
+  --radius:24px;
+}
+body.light{
+  --bg:#f5f7ff;
+  --bg-soft:#eef3ff;
+  --panel:rgba(255,255,255,.88);
+  --panel-2:rgba(18,29,58,.06);
+  --text:#0f172a;
+  --muted:#5f6b89;
+  --border:rgba(15,23,42,.1);
+  --brand:#315efb;
+  --brand-2:#15b89a;
+  --shadow:0 18px 60px rgba(59,85,163,.15);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;font-family:system-ui,-apple-system,Segoe UI,Tahoma,Arial,sans-serif;background:
+radial-gradient(circle at top right,rgba(89,216,197,.18),transparent 28%),
+radial-gradient(circle at top left,rgba(124,156,255,.18),transparent 28%),var(--bg);color:var(--text);min-height:100%}
+a{color:inherit}
+button,input,select{font:inherit}
+.app-shell{display:grid;grid-template-columns:340px 1fr;min-height:100vh}
+.sidebar{padding:24px;position:sticky;top:0;height:100vh;background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));backdrop-filter:blur(20px);border-left:1px solid var(--border)}
+.main-content{padding:28px}
+.brand{display:flex;gap:14px;align-items:center;margin-bottom:28px}
+.brand-mark{width:56px;height:56px;border-radius:18px;background:linear-gradient(135deg,var(--brand),var(--brand-2));display:grid;place-items:center;font-size:28px;box-shadow:var(--shadow)}
+.brand h1{font-size:1.2rem;margin:0 0 4px}
+.brand p{margin:0;color:var(--muted);font-size:.92rem}
+.search-panel,.filters,.side-note,.stats,.hero,.country-card,.recipe-card,.meta-chip,.modal-panel,.grid-toolbar{background:var(--panel);border:1px solid var(--border);backdrop-filter:blur(16px);box-shadow:var(--shadow)}
+.search-panel,.filters,.side-note{padding:16px;border-radius:20px;margin-bottom:16px}
+label{display:block;margin-bottom:8px;color:var(--muted);font-size:.92rem}
+input,select{width:100%;padding:14px 16px;border-radius:16px;border:1px solid var(--border);background:var(--panel-2);color:var(--text);outline:none}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px;border-radius:22px;margin-bottom:16px}
+.stat-card{padding:14px;border-radius:18px;background:var(--panel-2);text-align:center}
+.stat-card strong{display:block;font-size:1.4rem}
+.stat-card span,.side-note p{color:var(--muted);margin:0;font-size:.92rem;line-height:1.7}
+.hero{padding:22px 24px;border-radius:28px;display:flex;justify-content:space-between;gap:18px;align-items:center;margin-bottom:18px}
+.eyebrow{display:inline-flex;padding:8px 12px;border-radius:999px;background:rgba(124,156,255,.12);color:var(--brand);font-size:.82rem;margin-bottom:10px}
+.hero h2{margin:0 0 10px;font-size:clamp(1.5rem,3vw,2.5rem)}
+.hero p{margin:0;color:var(--muted);line-height:1.8}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap}
+.btn{border:1px solid var(--border);border-radius:16px;padding:12px 16px;cursor:pointer;transition:.2s ease;background:transparent;color:var(--text)}
+.btn:hover{transform:translateY(-1px)}
+.btn.primary{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:white;border:none}
+.btn.ghost{background:var(--panel-2)}
+.btn.full{width:100%}
+.grid-toolbar{padding:14px 16px;border-radius:20px;margin-bottom:18px;color:var(--muted)}
+.countries-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:18px}
+.country-card{padding:18px;border-radius:24px;display:flex;flex-direction:column;gap:14px}
+.country-head{display:flex;gap:12px;align-items:center}
+.flag{font-size:2rem;width:56px;height:56px;border-radius:18px;background:var(--panel-2);display:grid;place-items:center}
+.country-name{margin:0;font-size:1.15rem}
+.country-sub,.country-summary{margin:0;color:var(--muted);line-height:1.7}
+.country-meta{display:flex;gap:8px;flex-wrap:wrap}
+.meta-chip{padding:8px 12px;border-radius:999px;background:var(--panel-2);font-size:.82rem;color:var(--muted)}
+.modal.hidden{display:none}
+.modal{position:fixed;inset:0;z-index:20}
+.modal-backdrop{position:absolute;inset:0;background:rgba(5,8,18,.72);backdrop-filter:blur(6px)}
+.modal-panel{position:relative;max-width:1200px;width:min(1200px,96vw);max-height:92vh;overflow:auto;margin:4vh auto;padding:22px;border-radius:28px}
+.modal-close{position:sticky;top:10px;z-index:2;margin-inline-start:auto;display:block;width:44px;height:44px;border:none;border-radius:14px;background:var(--panel-2);color:var(--text);cursor:pointer}
+.modal-header{display:grid;grid-template-columns:auto 1fr auto;gap:16px;align-items:center;margin-bottom:18px}
+.modal-header .flag-big{font-size:3.2rem}
+.country-description{color:var(--muted);line-height:1.8}
+.link-row{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+.recipe-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:18px}
+.recipe-card{border-radius:24px;overflow:hidden}
+.recipe-cover{height:190px;width:100%;object-fit:cover;display:block;background:var(--panel-2)}
+.recipe-body{padding:16px}
+.recipe-body h4{margin:0 0 8px;font-size:1.08rem}
+.recipe-body p{margin:0 0 12px;color:var(--muted);line-height:1.75}
+.recipe-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.list-box{padding:14px;border-radius:18px;background:var(--panel-2);border:1px solid var(--border)}
+.list-box h5{margin:0 0 10px;font-size:.96rem}
+.list-box ul,.list-box ol{margin:0;padding-inline-start:20px;line-height:1.9;color:var(--muted)}
+.recipe-links{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.footer-note{margin-top:18px;color:var(--muted);line-height:1.8}
+@media (max-width: 980px){
+  .app-shell{grid-template-columns:1fr}
+  .sidebar{position:relative;height:auto;border-left:none;border-bottom:1px solid var(--border)}
+  .hero{flex-direction:column;align-items:flex-start}
+}
+@media (max-width: 640px){
+  .main-content,.sidebar{padding:16px}
+  .recipe-grid,.countries-grid{grid-template-columns:1fr}
+  .modal-header{grid-template-columns:1fr}
+  .two-col{grid-template-columns:1fr}
+}
