@@ -3,90 +3,296 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>موسوعة أكلات العالم</title>
-  <meta name="description" content="موقع عربي احترافي يجمع دول العالم مع 10 أكلات ووصفات لكل دولة تقريبًا، مع بحث سريع وخطوات التحضير وروابط فيديو." />
+  <title>موسوعة أكلات العالم 🌍</title>
+  <meta name="description" content="استكشف أشهر الوصفات والأطباق التقليدية من أكثر من 195 دولة حول العالم بواجهة احترافية ومميزة" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@200;300;400;500;700;800;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet" onerror="this.remove()">
+  <style>
+    /* Critical inline fonts fallback */
+    body { font-family: 'Tajawal', 'Segoe UI', Tahoma, 'Arabic Typesetting', Arial, sans-serif; }
+  </style>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="app-shell">
-    <aside class="sidebar">
-      <div class="brand">
-        <div class="brand-mark">🍽️</div>
-        <div>
-          <h1>موسوعة أكلات العالم</h1>
-          <p>كل الدول • وصفات • بحث سريع • جاهز لـ Vercel</p>
-        </div>
+
+  <!-- Preloader -->
+  <div id="preloader" class="preloader">
+    <div class="preloader-inner">
+      <div class="preloader-logo">
+        <div class="logo-ring"></div>
+        <div class="logo-icon">🍽️</div>
       </div>
-
-      <div class="search-panel">
-        <label for="searchInput">ابحث عن دولة أو كود دولة</label>
-        <input id="searchInput" type="search" placeholder="مثال: العراق / Italy / JP" />
+      <div class="preloader-text">
+        <span>م</span><span>و</span><span>س</span><span>و</span><span>ع</span><span>ة</span>
+        <span> </span>
+        <span>أ</span><span>ك</span><span>ل</span><span>ا</span><span>ت</span>
+        <span> </span>
+        <span>ا</span><span>ل</span><span>ع</span><span>ا</span><span>ل</span><span>م</span>
       </div>
-
-      <div class="filters">
-        <label for="regionFilter">تصفية حسب الإقليم</label>
-        <select id="regionFilter">
-          <option value="">كل الأقاليم</option>
-        </select>
-      </div>
-
-      <div class="stats">
-        <div class="stat-card">
-          <strong id="countriesCount">0</strong>
-          <span>الدول والمناطق</span>
-        </div>
-        <div class="stat-card">
-          <strong id="recipesCount">0</strong>
-          <span>الوصفات</span>
-        </div>
-      </div>
-
-      <div class="side-note">
-        <p>مهم: بعض الدول مغطاة بأطباق محلية مباشرة، وبعضها بأطباق ممثلة للإقليم الغذائي الأقرب لها حتى تبقى التغطية شاملة.</p>
-      </div>
-    </aside>
-
-    <main class="main-content">
-      <section class="hero">
-        <div>
-          <span class="eyebrow">نسخة ثابتة داخلية</span>
-          <h2>استعرض دول العالم واختر وصفاتك بسهولة</h2>
-          <p>واجهة عربية احترافية، وصفات محفوظة داخل المشروع نفسه، وبحث فوري وروابط فيديو وبحث خارجي عند الحاجة.</p>
-        </div>
-        <div class="hero-actions">
-          <button id="randomBtn" class="btn primary">اقترح عليّ دولة</button>
-          <button id="themeBtn" class="btn ghost">تبديل الوضع</button>
-        </div>
-      </section>
-
-      <section class="grid-toolbar">
-        <p id="resultsText">جارِ تحميل البيانات…</p>
-      </section>
-
-      <section id="countriesGrid" class="countries-grid"></section>
-    </main>
-  </div>
-
-  <div id="countryModal" class="modal hidden">
-    <div class="modal-backdrop" data-close="true"></div>
-    <div class="modal-panel">
-      <button class="modal-close" id="closeModalBtn" aria-label="إغلاق">✕</button>
-      <div id="modalContent"></div>
+      <div class="preloader-bar"><div class="preloader-fill"></div></div>
     </div>
   </div>
 
-  <template id="countryCardTemplate">
-    <article class="country-card">
-      <div class="country-head">
-        <div class="flag"></div>
-        <div>
-          <h3 class="country-name"></h3>
-          <p class="country-sub"></p>
+  <!-- Floating Particles -->
+  <div class="particles" id="particles"></div>
+
+  <!-- Navigation -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <div class="nav-logo">
+          <span class="logo-emoji">🍽️</span>
+          <div class="logo-pulse"></div>
+        </div>
+        <div class="nav-titles">
+          <span class="nav-title-main">موسوعة أكلات العالم</span>
+          <span class="nav-title-sub">World Food Encyclopedia</span>
         </div>
       </div>
-      <p class="country-summary"></p>
-      <div class="country-meta"></div>
-      <button class="btn primary full">فتح الوصفات</button>
+      <div class="nav-stats">
+        <div class="nav-stat">
+          <strong id="navCountries">0</strong>
+          <span>دولة</span>
+        </div>
+        <div class="nav-divider"></div>
+        <div class="nav-stat">
+          <strong id="navRecipes">0</strong>
+          <span>وصفة</span>
+        </div>
+      </div>
+      <div class="nav-actions">
+        <button id="randomBtn" class="btn-nav primary" aria-label="وجبة عشوائية">
+          <span class="btn-icon">🎲</span>
+          <span>عشوائي</span>
+        </button>
+        <button id="themeBtn" class="btn-nav ghost" aria-label="تبديل الوضع">
+          <span id="themeIcon">🌙</span>
+        </button>
+        <button id="mobileMenuBtn" class="btn-nav ghost mobile-menu-btn" aria-label="القائمة">
+          <span>☰</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-bg">
+      <div class="hero-orb orb-1"></div>
+      <div class="hero-orb orb-2"></div>
+      <div class="hero-orb orb-3"></div>
+      <div class="hero-grid"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        <span>أكبر موسوعة طعام عالمية باللغة العربية</span>
+      </div>
+      <h1 class="hero-title">
+        <span class="title-line">استكشف نكهات</span>
+        <span class="title-line gradient-text">العالم كله</span>
+        <span class="title-line">في مكان واحد</span>
+      </h1>
+      <p class="hero-desc">رحلة طهي استثنائية عبر أكثر من <strong>195 دولة</strong> مع وصفات تقليدية أصيلة، مكونات تفصيلية، وخطوات تحضير مبسطة</p>
+      <div class="hero-cta">
+        <button id="heroExploreBtn" class="btn-hero primary">
+          <span>ابدأ الاستكشاف</span>
+          <span class="btn-arrow">←</span>
+        </button>
+        <button id="heroRandomBtn" class="btn-hero ghost">
+          <span>🎲</span>
+          <span>دولة عشوائية</span>
+        </button>
+      </div>
+      <div class="hero-counters">
+        <div class="counter-item">
+          <div class="counter-num" data-target="195">0</div>
+          <div class="counter-label">دولة وإقليم</div>
+        </div>
+        <div class="counter-sep">•</div>
+        <div class="counter-item">
+          <div class="counter-num" data-target="1950">0</div>
+          <div class="counter-label">وصفة مميزة</div>
+        </div>
+        <div class="counter-sep">•</div>
+        <div class="counter-item">
+          <div class="counter-num" data-target="8">0</div>
+          <div class="counter-label">مناطق غذائية</div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="food-globe">
+        <div class="globe-ring ring-1"></div>
+        <div class="globe-ring ring-2"></div>
+        <div class="globe-ring ring-3"></div>
+        <div class="globe-center">🌍</div>
+        <div class="food-orbit">
+          <div class="food-dot" style="--i:0">🍜</div>
+          <div class="food-dot" style="--i:1">🥘</div>
+          <div class="food-dot" style="--i:2">🍣</div>
+          <div class="food-dot" style="--i:3">🥗</div>
+          <div class="food-dot" style="--i:4">🍛</div>
+          <div class="food-dot" style="--i:5">🍕</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Search & Filter Bar -->
+  <div class="search-bar-wrapper" id="searchBarWrapper">
+    <div class="search-bar-container">
+      <div class="search-input-group">
+        <span class="search-icon">🔍</span>
+        <input id="searchInput" type="search" placeholder="ابحث عن دولة، طبق، أو إقليم..." class="search-main-input" autocomplete="off" />
+        <button class="search-clear" id="searchClear" aria-label="مسح البحث">✕</button>
+      </div>
+      <div class="filter-group">
+        <span class="filter-icon">🌐</span>
+        <select id="regionFilter" class="region-select">
+          <option value="">كل المناطق</option>
+        </select>
+      </div>
+      <div class="sort-group">
+        <span class="sort-icon">⚡</span>
+        <select id="sortSelect" class="sort-select">
+          <option value="name">ترتيب أبجدي</option>
+          <option value="recipes">الأكثر وصفات</option>
+          <option value="region">حسب الإقليم</option>
+        </select>
+      </div>
+    </div>
+    <div class="results-bar">
+      <div class="results-info">
+        <span id="resultsText">جارٍ التحميل...</span>
+      </div>
+      <div class="view-toggle">
+        <button class="view-btn active" id="gridViewBtn" aria-label="عرض شبكي">⊞</button>
+        <button class="view-btn" id="listViewBtn" aria-label="عرض قائمة">≡</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="main-wrapper">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-section">
+        <h3 class="sidebar-title">
+          <span>📊</span> الإحصائيات
+        </h3>
+        <div class="stats-grid">
+          <div class="stat-box">
+            <div class="stat-icon">🌍</div>
+            <div class="stat-info">
+              <strong id="countriesCount">0</strong>
+              <span>دولة</span>
+            </div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-icon">📖</div>
+            <div class="stat-info">
+              <strong id="recipesCount">0</strong>
+              <span>وصفة</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <h3 class="sidebar-title">
+          <span>🗺️</span> المناطق الجغرافية
+        </h3>
+        <div id="regionsList" class="regions-list"></div>
+      </div>
+
+      <div class="sidebar-section">
+        <h3 class="sidebar-title">
+          <span>⭐</span> الأكثر شهرة
+        </h3>
+        <div class="popular-items" id="popularList"></div>
+      </div>
+
+      <div class="sidebar-info">
+        <div class="info-icon">💡</div>
+        <p>يشمل الموقع أطباقًا أصيلة من المطبخ المحلي لكل دولة، مع روابط مباشرة لفيديوهات الطبخ والوصفات التفصيلية.</p>
+      </div>
+    </aside>
+
+    <!-- Countries Grid -->
+    <div class="content-area">
+      <section id="countriesGrid" class="countries-grid" role="list"></section>
+      <div class="load-more-wrapper" id="loadMoreWrapper">
+        <button id="loadMoreBtn" class="btn-load-more">
+          <span>تحميل المزيد</span>
+          <div class="spinner"></div>
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <span class="footer-logo">🍽️</span>
+        <div>
+          <h4>موسوعة أكلات العالم</h4>
+          <p>مشروع مفتوح المصدر لحفظ التراث الغذائي العالمي</p>
+        </div>
+      </div>
+      <div class="footer-note">
+        <p>جميع الوصفات للأغراض التعليمية والترفيهية • بعض الدول تحتوي أطباقًا تمثيلية للإقليم الغذائي الأقرب</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Country Modal -->
+  <div id="countryModal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-backdrop" id="modalBackdrop"></div>
+    <div class="modal-container">
+      <div class="modal-panel" id="modalPanel">
+        <button class="modal-close-btn" id="closeModalBtn" aria-label="إغلاق">
+          <span>✕</span>
+        </button>
+        <div id="modalContent" class="modal-content-wrapper"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast hidden">
+    <span id="toastMsg"></span>
+  </div>
+
+  <!-- Card Template -->
+  <template id="countryCardTemplate">
+    <article class="country-card" role="listitem">
+      <div class="card-image-wrapper">
+        <div class="card-flag-large"></div>
+        <div class="card-overlay">
+          <button class="card-quick-view">← فتح</button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-header">
+          <div class="card-flag-small"></div>
+          <div class="card-title-group">
+            <h3 class="card-name-ar"></h3>
+            <p class="card-name-en"></p>
+          </div>
+        </div>
+        <p class="card-region"></p>
+        <p class="card-summary"></p>
+        <div class="card-meta"></div>
+        <div class="card-footer">
+          <button class="btn-open-recipes">
+            <span class="btn-text">استعرض الوصفات</span>
+            <span class="btn-count"></span>
+          </button>
+        </div>
+      </div>
     </article>
   </template>
 
