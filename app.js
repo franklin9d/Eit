@@ -1,8 +1,8 @@
 'use strict';
 
 /* ══════════════════════════════════════════════
-   موسوعة أكلات العالم — app.js v3.0
-   صور SVG احترافية وفريدة لكل وجبة
+   موسوعة أكلات العالم — app.js v5.0
+   صور حقيقية من Unsplash لكل وجبة
    ══════════════════════════════════════════════ */
 
 const S = {
@@ -20,8 +20,8 @@ const EL = {
   sortSelect:   $('sortSelect'),
   grid:         $('countriesGrid'),
   resultsText:  $('resultsText'),
-  cCount:       $('countriesCount'),
-  rCount:       $('recipesCount'),
+  cCount:       $('navC'),
+  rCount:       $('navR'),
   navC:         $('navC'),
   navR:         $('navR'),
   randomBtn:    $('randomBtn'),
@@ -43,356 +43,519 @@ const EL = {
 };
 
 /* ══════════════════════════════════════════════
-   🎨 PROFESSIONAL FOOD SVG GENERATOR
-   كل وجبة تحصل على صورة فريدة وجميلة
+   📸 REAL FOOD PHOTOS DATABASE
+   صور حقيقية من Unsplash لكل وجبة
    ══════════════════════════════════════════════ */
 
-// 50 لوحة ألوان متنوعة واحترافية
-const PALETTES = [
-  { bg: ['#1a0533','#2d0d52'], main: '#c77dff', accent: '#ff6b9d', hi: '#ffd166' },
-  { bg: ['#061a20','#0d3040'], main: '#42dfc8', accent: '#4d96ff', hi: '#ffd166' },
-  { bg: ['#1a0a00','#3d1a00'], main: '#ff8c42', accent: '#ffd166', hi: '#ff6b6b' },
-  { bg: ['#001a33','#002952'], main: '#4d96ff', accent: '#42dfc8', hi: '#c77dff' },
-  { bg: ['#1a1a00','#333300'], main: '#e9c46a', accent: '#f4a261', hi: '#e76f51' },
-  { bg: ['#1a0016','#330030'], main: '#f72585', accent: '#b5179e', hi: '#ffd166' },
-  { bg: ['#001a0d','#00331a'], main: '#52b788', accent: '#40916c', hi: '#d8f3dc' },
-  { bg: ['#1a0505','#330a0a'], main: '#ff6b6b', accent: '#ff4444', hi: '#ffd93d' },
-  { bg: ['#0d001a','#1a0035'], main: '#7b2fff', accent: '#c77dff', hi: '#42dfc8' },
-  { bg: ['#001a1a','#003333'], main: '#2ec4b6', accent: '#cbf3f0', hi: '#ff9f1c' },
-  { bg: ['#1a0a05','#331505'], main: '#f4845f', accent: '#f77f00', hi: '#ffd166' },
-  { bg: ['#050a1a','#0a1533'], main: '#7c9cff', accent: '#a78bfa', hi: '#34d399' },
-  { bg: ['#1a0818','#330f30'], main: '#e879f9', accent: '#f0abfc', hi: '#fbbf24' },
-  { bg: ['#0a1a05','#153305'], main: '#86efac', accent: '#4ade80', hi: '#fde68a' },
-  { bg: ['#1a1205','#33220a'], main: '#fbbf24', accent: '#f59e0b', hi: '#ef4444' },
-  { bg: ['#051a1a','#0a3333'], main: '#67e8f9', accent: '#22d3ee', hi: '#a78bfa' },
-  { bg: ['#1a0510','#330a1e'], main: '#fb7185', accent: '#f43f5e', hi: '#fcd34d' },
-  { bg: ['#061205','#0a2208'], main: '#6ee7b7', accent: '#10b981', hi: '#fbbf24' },
-  { bg: ['#180d00','#301a00'], main: '#fdba74', accent: '#fb923c', hi: '#86efac' },
-  { bg: ['#050318','#0a0630'], main: '#818cf8', accent: '#6366f1', hi: '#34d399' },
-  { bg: ['#1a0808','#330f0f'], main: '#fca5a5', accent: '#ef4444', hi: '#fde047' },
-  { bg: ['#041a0a','#083314'], main: '#34d399', accent: '#059669', hi: '#fbbf24' },
-  { bg: ['#100a1a','#201530'], main: '#c4b5fd', accent: '#8b5cf6', hi: '#f472b6' },
-  { bg: ['#1a0f00','#331e00'], main: '#fcd34d', accent: '#f59e0b', hi: '#f87171' },
-  { bg: ['#001015','#001e28'], main: '#38bdf8', accent: '#0ea5e9', hi: '#a3e635' },
+// قاعدة بيانات الصور الحقيقية - مرتبة حسب اسم الوجبة الإنجليزي
+// Unsplash CDN - صور عالية الجودة
+const FOOD_IMAGES = {
+  // === أ ===
+  "Acarajé":                "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=600&q=80",
+  "Alexandrian Liver":      "https://images.unsplash.com/photo-1544025162-d76694265947?w=600&q=80",
+  "Apple Pastry":           "https://images.unsplash.com/photo-1568571780765-9276ac8b75a2?w=600&q=80",
+  "Arancini":               "https://images.unsplash.com/photo-1551782450-a2132b4ba21d?w=600&q=80",
+  "Aromatic Fried Rice":    "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=600&q=80",
+  "Arroz con Pollo":        "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=600&q=80",
+  "Artisan Sandwich":       "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80",
+  "Avocado Salad":          "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80",
+
+  // === ب ===
+  "BBQ Plate":              "https://images.unsplash.com/photo-1544025162-d76694265947?w=600&q=80",
+  "BBQ Ribs":               "https://images.unsplash.com/photo-1558030006-450675393462?w=600&q=80",
+  "Baked Fish":             "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=600&q=80",
+  "Baked Mince":            "https://images.unsplash.com/photo-1529042410759-befb1204b468?w=600&q=80",
+  "Baked Pasta":            "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=600&q=80",
+  "Baked Pastries":         "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&q=80",
+  "Baked Spiced Fish":      "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=600&q=80",
+  "Baked Stuffed Vegetables":"https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80",
+  "Baklava":                "https://images.unsplash.com/photo-1619881590738-a111f0e1a7e5?w=600&q=80",
+  "Bamia Stew":             "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600&q=80",
+  "Bao Buns":               "https://images.unsplash.com/photo-1563245372-f21724e3856d?w=600&q=80",
+  "Barbecue Plate":         "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=600&q=80",
+  "Bean Dessert":           "https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=600&q=80",
+  "Bean Dish":              "https://images.unsplash.com/photo-1512058564366-18510be2db19?w=600&q=80",
+  "Bean Fritters":          "https://images.unsplash.com/photo-1551782450-a2132b4ba21d?w=600&q=80",
+  "Bean Pudding":           "https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=600&q=80",
+  "Bean Soup":              "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600&q=80",
+  "Bean Stew":              "https://images.unsplash.com/photo-1534939561126-855b8675edd7?w=600&q=80",
+  "Beet Burger":            "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&q=80",
+  "Biryani":                "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=600&q=80",
+  "Black Bean Stew":        "https://images.unsplash.com/photo-1534939561126-855b8675edd7?w=600&q=80",
+  "Bolognese":              "https://images.unsplash.com/photo-1551892374-ecf8754cf8b0?w=600&q=80",
+  "Braai":                  "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=600&q=80",
+  "Breakfast Beans":        "https://images.unsplash.com/photo-1525351484163-7529414344d8?w=600&q=80",
+  "Breakfast Plate":        "https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?w=600&q=80",
+  "Brigadeiro":             "https://images.unsplash.com/photo-1548365328-8c6db3220e4c?w=600&q=80",
+  "Burger":                 "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&q=80",
+  "Burger/Sandwich":        "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&q=80",
+  "Burrito":                "https://images.unsplash.com/photo-1552332386-f8dd00dc2f85?w=600&q=80",
+  "Butter Chicken":         "https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?w=600&q=80",
+
+  // === ك ===
+  "Carbonara":              "https://images.unsplash.com/photo-1612874742237-6526221588e3?w=600&q=80",
+  "Chakalaka":              "https://images.unsplash.com/photo-1512058564366-18510be2db19?w=600&q=80",
+  "Charcoal Skewers":       "https://images.unsplash.com/photo-1529042410759-befb1204b468?w=600&q=80",
+  "Cheese Bread":           "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&q=80",
+  "Cheesecake":             "https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=600&q=80",
+  "Cheesy Pasta":           "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=600&q=80",
+  "Chicken Curry":          "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=600&q=80",
+  "Chicken Rice":           "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=600&q=80",
+  "Chickpea Soup":          "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600&q=80",
+  "Chole":                  "https://images.unsplash.com/photo-1548943487-a2e4e43b4853?w=600&q=80",
+  "Chorizo with Potatoes":  "https://images.unsplash.com/photo-1529042410759-befb1204b468?w=600&q=80",
+  "Chow Mein":              "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600&q=80",
+  "Cinnamon Bun":           "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&q=80",
+  "Clam Chowder":           "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600&q=80",
+  "Classic Stew":           "https://images.unsplash.com/photo-1534939561126-855b8675edd7?w=600&q=80",
+  "Clear Broth Soup":       "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600&q=80",
+  "Coconut Curry":          "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=600&q=80",
+  "Coconut Dessert":        "https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=600&q=80",
+  "Coconut Fish":           "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=600&q=80",
+  "Coconut Pudding":        "https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=600&q=80",
+  "Coconut Rice":           "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=600&q=80",
+  "Coconut Soup":           "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600&q=80",
+  "Coleslaw":               "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80",
+  "Cooked Greens":          "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80",
+  "Corn or Chicken Soup":   "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600&q=80",
+  "Corn/Pumpkin Soup":      "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600&q=80",
+  "Couscous with Vegetables":"https://images.unsplash.com/photo-1541518763669-27fef04b14ea?w=600&q=80",
+  "Coxinha":                "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=600&q=80",
+  "Cream Soup":             "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600&q=80",
+  "Creamy Soup":            "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600&q=80",
+  "Crepe Style Pancake":    "https://images.unsplash.com/photo-1519676867240-f03562e64548?w=600&q=80",
+  "Crispy Chicken":         "https://images.unsplash.com/photo-1562967914-608f82629710?w=600&q=80",
+  "Cumin Grilled Meat":     "https://images.unsplash.com/photo-1529042410759-befb1204b468?w=600&q=80",
+  "Cured Meat Plate":       "https://images.unsplash.com/photo-1544025162-d76694265947?w=600&q=80",
+
+  // === د ===
+  "Dal":                    "https://images.unsplash.com/photo-1548943487-a2e4e43b4853?w=600&q=80",
+  "Damper Bread":           "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&q=80",
+  "Dessert Pie":            "https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=600&q=80",
+  "Donburi":                "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600&q=80",
+  "Dumplings":              "https://images.unsplash.com/photo-1563245372-f21724e3856d?w=600&q=80",
+
+  // === إ ===
+  "Earth Oven Roast":       "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=600&q=80",
+  "Eggplant Bake":          "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80",
+  "Egyptian Shawarma":      "https://images.unsplash.com/photo-1604908177453-7462950a6a3b?w=600&q=80",
+  "Empanada":               "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=600&q=80",
+  "Enchiladas":             "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&q=80",
+
+  // === ف ===
+  "Farofa":                 "https://images.unsplash.com/photo-1543826173-1beeb97525d8?w=600&q=80",
+  "Fatta":                  "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=600&q=80",
+  "Feijoada":               "https://images.unsplash.com/photo-1534939561126-855b8675edd7?w=600&q=80",
+  "Fermented Flatbread":    "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&q=80",
+  "Festive Rice":           "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=600&q=80",
+  "Filled Dumplings":       "https://images.unsplash.com/photo-1563245372-f21724e3856d?w=600&q=80",
+  "Fish Plate":             "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=600&q=80",
+  "Fish Salad":             "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&q=80",
+  "Fish and Chips":         "https://images.unsplash.com/photo-1574484284002-952d92456975?w=600&q=80",
+  "Flatbread":              "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&q=80",
+  "Flatbread Breakfast":    "https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?w=600&q=80",
+  "Flavored Rice":          "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=600&q=80",
+  "Focaccia":               "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&q=80",
+  "Fresh Island Salad":     "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80",
+  "Fresh Rolls":            "https://images.unsplash.com/photo-1562802378-063ec186a863?w=600&q=80",
+  "Fresh Salad":            "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80",
+  "Fresh Slaw":             "https://images.unsplash.com/photo-1546793665-c74683f339c1?w=600&q=80",
+  "Fried Chicken":          "https://images.unsplash.com/photo-1562967914-608f82629710?w=600&q=80",
+  "Fried Dough":            "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=600&q=80",
+  "Fried Plantain":         "https://images.unsplash.com/photo-1543826173-1beeb97525d8?w=600&q=80",
+  "Fried Rice":             "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=600&q=80",
+  "Fried Root/Plantain":    "https://images.unsplash.com/photo-1543826173-1beeb97525d8?w=600&q=80",
+  "Fruit Tart":             "https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=600&q=80",
+  "Fufu":                   "https://images.unsplash.com/photo-1543826173-1beeb97525d8?w=600&q=80",
+  "Ful Medames":            "https://images.unsplash.com/photo-1512058564366-18510be2db19?w=600&q=80",
+
+  // === ج ===
+  "Grilled Fish":           "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=600&q=80",
+  "Grilled Meat":           "https://images.unsplash.com/photo-1529042410759-befb1204b468?w=600&q=80",
+  "Grilled Seafood":        "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=600&q=80",
+  "Grilled Skewers":        "https://images.unsplash.com/photo-1529042410759-befb1204b468?w=600&q=80",
+  "Guacamole":              "https://images.unsplash.com/photo-1546793665-c74683f339c1?w=600&q=80",
+  "Gulab Jamun":            "https://images.unsplash.com/photo-1548365328-8c6db3220e4c?w=600&q=80",
+  "Gyoza":                  "https://images.unsplash.com/photo-1563245372-f21724e3856d?w=600&q=80",
+
+  // === ح ===
+  "Hearty Grain Bowl":      "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80",
+  "Herb Chicken":           "https://images.unsplash.com/photo-1598103442097-8b74394b95c3?w=600&q=80",
+  "Herb Roast Chicken":     "https://images.unsplash.com/photo-1598103442097-8b74394b95c3?w=600&q=80",
+  "Herb Vegetable Stew":    "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600&q=80",
+  "Home Fried Rice":        "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=600&q=80",
+  "Home Kebab":             "https://images.unsplash.com/photo-1529042410759-befb1204b468?w=600&q=80",
+  "Hot Dog":                "https://images.unsplash.com/photo-1612392061787-2a3e9c8b3d43?w=600&q=80",
+  "Hot Pot":                "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600&q=80",
+
+  // === ع ===
+  "Iraqi Dolma":            "https://images.unsplash.com/photo-1512058564366-18510be2db19?w=600&q=80",
+  "Iskender Kebab":         "https://images.unsplash.com/photo-1529042410759-befb1204b468?w=600&q=80",
+  "Island Bread":           "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&q=80",
+  "Island Flatbread":       "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&q=80",
+  "Island Grilled Fish":    "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=600&q=80",
+  "Island Patties":         "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&q=80",
+  "Island Salad":           "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80",
+  "Island Soup":            "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600&q=80",
+
+  // === ي ===
+  "Jambalaya":              "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=600&q=80",
+  "Japanese Curry":         "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600&q=80",
+  "Jerk Style Chicken":     "https://images.unsplash.com/photo-1562967914-608f82629710?w=600&q=80",
+  "Jollof Style Rice":      "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=600&q=80",
+
+  // === ك ===
+  "Kibbeh":                 "https://images.unsplash.com/photo-1529042410759-befb1204b468?w=600&q=80",
+  "Koshari":                "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=600&q=80",
+  "Kung Pao Chicken":       "https://images.unsplash.com/photo-1525755662778-989d0524087e?w=600&q=80",
+
+  // === ل ===
+  "Lahmacun":               "https://images.unsplash.com/photo-1528137871618-79d2761e3fd5?w=600&q=80",
+  "Lamington":              "https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=600&q=80",
+  "Lasagna":                "https://images.unsplash.com/photo-1619895092538-128341789043?w=600&q=80",
+  "Leaf Coconut Dish":      "https://images.unsplash.com/photo-1543826173-1beeb97525d8?w=600&q=80",
+  "Lemongrass Fish":        "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=600&q=80",
+  "Lentil Vegetable Stew":  "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600&q=80",
+  "Local Curry":            "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=600&q=80",
+
+  // === م ===
+  "Mac and Cheese":         "https://images.unsplash.com/photo-1543352634-a1c51d9f1fa7?w=600&q=80",
+  "Mahshi":                 "https://images.unsplash.com/photo-1512058564366-18510be2db19?w=600&q=80",
+  "Maize Porridge":         "https://images.unsplash.com/photo-1543826173-1beeb97525d8?w=600&q=80",
+  "Manti":                  "https://images.unsplash.com/photo-1563245372-f21724e3856d?w=600&q=80",
+  "Mapo Tofu":              "https://images.unsplash.com/photo-1525755662778-989d0524087e?w=600&q=80",
+  "Masala Dosa":            "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=600&q=80",
+  "Masgouf":                "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=600&q=80",
+  "Mashed Potatoes":        "https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=600&q=80",
+  "Mashed Root Dish":       "https://images.unsplash.com/photo-1543826173-1beeb97525d8?w=600&q=80",
+  "Meat Pie":               "https://images.unsplash.com/photo-1529042410759-befb1204b468?w=600&q=80",
+  "Meat Tagine":            "https://images.unsplash.com/photo-1541518763669-27fef04b14ea?w=600&q=80",
+  "Meatballs":              "https://images.unsplash.com/photo-1529042410759-befb1204b468?w=600&q=80",
+  "Mediterranean Fish":     "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=600&q=80",
+  "Mediterranean Salad":    "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80",
+  "Menemen":                "https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?w=600&q=80",
+  "Mercimek Soup":          "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600&q=80",
+  "Milk Dessert":           "https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=600&q=80",
+  "Milk Tart Style":        "https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=600&q=80",
+  "Minestrone":             "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600&q=80",
+  "Mochi":                  "https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=600&q=80",
+  "Mole":                   "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&q=80",
+  "Molokhia":               "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600&q=80",
+  "Moqueca":                "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=600&q=80",
+
+  // === ن ===
+  "Naan":                   "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=600&q=80",
+  "Neapolitan Pizza":       "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&q=80",
+  "Noodle Soup":            "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600&q=80",
+
+  // === أو ===
+  "Oat Porridge":           "https://images.unsplash.com/photo-1495214783159-3503fd1b572d?w=600&q=80",
+  "Om Ali":                 "https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=600&q=80",
+  "Onigiri":                "https://images.unsplash.com/photo-1562802378-063ec186a863?w=600&q=80",
+  "Open Sandwich":          "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80",
+  "Osso Buco":              "https://images.unsplash.com/photo-1544025162-d76694265947?w=600&q=80",
+
+  // === ب ===
+  "Pacha":                  "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600&q=80",
+  "Palak Paneer":           "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=600&q=80",
+  "Pan Cakes":              "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=600&q=80",
+  "Pancakes":               "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=600&q=80",
+  "Pap":                    "https://images.unsplash.com/photo-1543826173-1beeb97525d8?w=600&q=80",
+  "Paprika Stew":           "https://images.unsplash.com/photo-1534939561126-855b8675edd7?w=600&q=80",
+  "Pasta or Rice Plate":    "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=600&q=80",
+  "Pastry Dessert":         "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&q=80",
+  "Pavlova":                "https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=600&q=80",
+  "Peking Duck":            "https://images.unsplash.com/photo-1525755662778-989d0524087e?w=600&q=80",
+  "Pepper Soup":            "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600&q=80",
+  "Picanha":                "https://images.unsplash.com/photo-1558030006-450675393462?w=600&q=80",
+  "Pide":                   "https://images.unsplash.com/photo-1528137871618-79d2761e3fd5?w=600&q=80",
+  "Pilaf":                  "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=600&q=80",
+  "Pilau Rice":             "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=600&q=80",
+  "Plantain/Yam Plate":     "https://images.unsplash.com/photo-1543826173-1beeb97525d8?w=600&q=80",
+  "Potato Bake":            "https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=600&q=80",
+  "Potato Gratin":          "https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=600&q=80",
+  "Potato Salad":           "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80",
+  "Pozole":                 "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600&q=80",
+  "Puff Dough":             "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&q=80",
+  "Pumpkin Soup":           "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600&q=80",
+  "Pão de Queijo":          "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&q=80",
+
+  // === ك ===
+  "Quesadilla":             "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&q=80",
+  "Quzi":                   "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=600&q=80",
+
+  // === ر ===
+  "Ramen":                  "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600&q=80",
+  "Rice Bowl":              "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600&q=80",
+  "Rice Plate":             "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=600&q=80",
+  "Rice Pudding":           "https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=600&q=80",
+  "Rice and Beans":         "https://images.unsplash.com/photo-1512058564366-18510be2db19?w=600&q=80",
+  "Rice with Chicken":      "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=600&q=80",
+  "Risotto":                "https://images.unsplash.com/photo-1626200419199-391ae4be7a41?w=600&q=80",
+  "Roast Chicken":          "https://images.unsplash.com/photo-1598103442097-8b74394b95c3?w=600&q=80",
+  "Roasted Potatoes":       "https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=600&q=80",
+  "Root Stew":              "https://images.unsplash.com/photo-1534939561126-855b8675edd7?w=600&q=80",
+  "Root Vegetable Plate":   "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80",
+  "Root Vegetable Soup":    "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600&q=80",
+
+  // === س ===
+  "Samosa":                 "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=600&q=80",
+  "Samosa Pastry":          "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=600&q=80",
+  "Sarma":                  "https://images.unsplash.com/photo-1512058564366-18510be2db19?w=600&q=80",
+  "Satay Skewers":          "https://images.unsplash.com/photo-1529042410759-befb1204b468?w=600&q=80",
+  "Sausage Grill":          "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=600&q=80",
+  "Sauteed Meat":           "https://images.unsplash.com/photo-1544025162-d76694265947?w=600&q=80",
+  "Savory Breakfast":       "https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?w=600&q=80",
+  "Savory Pastry":          "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&q=80",
+  "Savory Pie":             "https://images.unsplash.com/photo-1529042410759-befb1204b468?w=600&q=80",
+  "Savory Tart":            "https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=600&q=80",
+  "Seafood Coconut Stew":   "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=600&q=80",
+  "Seafood Stew":           "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=600&q=80",
+  "Seasoned Chicken":       "https://images.unsplash.com/photo-1598103442097-8b74394b95c3?w=600&q=80",
+  "Seed Soup":              "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600&q=80",
+  "Semolina Bowl":          "https://images.unsplash.com/photo-1543826173-1beeb97525d8?w=600&q=80",
+  "Simple Fried Rice":      "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=600&q=80",
+  "Skewered Meat":          "https://images.unsplash.com/photo-1529042410759-befb1204b468?w=600&q=80",
+  "Sloppy Joe":             "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&q=80",
+  "Slow Braised Meat":      "https://images.unsplash.com/photo-1544025162-d76694265947?w=600&q=80",
+  "Smoked Fish Plate":      "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=600&q=80",
+  "Soup":                   "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600&q=80",
+  "Spiced Dal":             "https://images.unsplash.com/photo-1548943487-a2e4e43b4853?w=600&q=80",
+  "Spiced Lentils":         "https://images.unsplash.com/photo-1548943487-a2e4e43b4853?w=600&q=80",
+  "Spiced Rice":            "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=600&q=80",
+  "Spiced Rice Platter":    "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=600&q=80",
+  "Spicy Chicken Stew":     "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=600&q=80",
+  "Spicy Salad":            "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80",
+  "Staple with Sauce":      "https://images.unsplash.com/photo-1543826173-1beeb97525d8?w=600&q=80",
+  "Steamed Fish":           "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=600&q=80",
+  "Sticky Rice Dessert":    "https://images.unsplash.com/photo-1562802378-063ec186a863?w=600&q=80",
+  "Stir Fried Greens":      "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80",
+  "Stir Fried Noodles":     "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600&q=80",
+  "Strogonoff":             "https://images.unsplash.com/photo-1544025162-d76694265947?w=600&q=80",
+  "Stuffed Cabbage":        "https://images.unsplash.com/photo-1512058564366-18510be2db19?w=600&q=80",
+  "Stuffed Dumplings":      "https://images.unsplash.com/photo-1563245372-f21724e3856d?w=600&q=80",
+  "Stuffed Flatbread":      "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=600&q=80",
+  "Stuffed Pigeon":         "https://images.unsplash.com/photo-1598103442097-8b74394b95c3?w=600&q=80",
+  "Stuffed Vegetables":     "https://images.unsplash.com/photo-1512058564366-18510be2db19?w=600&q=80",
+  "Sushi":                  "https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=600&q=80",
+  "Suya Style Skewers":     "https://images.unsplash.com/photo-1529042410759-befb1204b468?w=600&q=80",
+  "Sweet Island Bread":     "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&q=80",
+  "Sweet Savory Chicken":   "https://images.unsplash.com/photo-1598103442097-8b74394b95c3?w=600&q=80",
+  "Sweet Treat":            "https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=600&q=80",
+  "Sweet and Sour":         "https://images.unsplash.com/photo-1525755662778-989d0524087e?w=600&q=80",
+
+  // === ت ===
+  "Taameya":                "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=600&q=80",
+  "Tacos":                  "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=600&q=80",
+  "Tamal Style":            "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&q=80",
+  "Tamales":                "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&q=80",
+  "Taman wa Qeema":         "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=600&q=80",
+  "Tandoori Style":         "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=600&q=80",
+  "Tashreeb":               "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600&q=80",
+  "Tea Breakfast":          "https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?w=600&q=80",
+  "Tempura":                "https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=600&q=80",
+  "Tepsi Baytinijan":       "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80",
+  "Tikka Masala":           "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=600&q=80",
+  "Tiramisu":               "https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=600&q=80",
+  "Tofu in Sauce":          "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80",
+  "Tomato Lentil Soup":     "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600&q=80",
+  "Tomato Rice":            "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=600&q=80",
+  "Tortilla Bean Plate":    "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&q=80",
+  "Traditional Breakfast Plate":"https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?w=600&q=80",
+  "Tropical Dessert":       "https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=600&q=80",
+  "Tropical Fruit Bowl":    "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&q=80",
+  "Tropical Salad":         "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80",
+  "Tropical Soup":          "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600&q=80",
+  "Turkish Kofta":          "https://images.unsplash.com/photo-1529042410759-befb1204b468?w=600&q=80",
+
+  // === أو ===
+  "Udon":                   "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600&q=80",
+
+  // === خ ===
+  "Vegetable Curry":        "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=600&q=80",
+  "Vegetable Omelette":     "https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?w=600&q=80",
+
+  // === و ===
+  "Warm Salad":             "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80",
+  "Wok Noodles":            "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600&q=80",
+  "Wonton Soup":            "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600&q=80",
+
+  // === ي ===
+  "Yakitori":               "https://images.unsplash.com/photo-1529042410759-befb1204b468?w=600&q=80",
+  "Yam/Taro Dish":          "https://images.unsplash.com/photo-1543826173-1beeb97525d8?w=600&q=80",
+  "Yogurt Meat Stew":       "https://images.unsplash.com/photo-1534939561126-855b8675edd7?w=600&q=80",
+};
+
+// صور خلفية الدول حسب المنطقة الجغرافية (للبطاقات)
+const COUNTRY_BG_IMAGES = {
+  // الشرق الأوسط وشمال أفريقيا
+  "SA": "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=600&q=80",
+  "EG": "https://images.unsplash.com/photo-1553913861-c0fddf2619ee?w=600&q=80",
+  "TR": "https://images.unsplash.com/photo-1549637642-90187f64f420?w=600&q=80",
+  "MA": "https://images.unsplash.com/photo-1539020140153-e478baae3e7b?w=600&q=80",
+  "IQ": "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=600&q=80",
+  "LB": "https://images.unsplash.com/photo-1604908177453-7462950a6a3b?w=600&q=80",
+  "SY": "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=600&q=80",
+  "JO": "https://images.unsplash.com/photo-1604908177453-7462950a6a3b?w=600&q=80",
+  "TN": "https://images.unsplash.com/photo-1541518763669-27fef04b14ea?w=600&q=80",
+  "DZ": "https://images.unsplash.com/photo-1541518763669-27fef04b14ea?w=600&q=80",
+  "LY": "https://images.unsplash.com/photo-1541518763669-27fef04b14ea?w=600&q=80",
+  // آسيا
+  "JP": "https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=600&q=80",
+  "CN": "https://images.unsplash.com/photo-1525755662778-989d0524087e?w=600&q=80",
+  "IN": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=600&q=80",
+  "TH": "https://images.unsplash.com/photo-1562565652-a0d8f0c59eb4?w=600&q=80",
+  "KR": "https://images.unsplash.com/photo-1557872943-16a5ac26437e?w=600&q=80",
+  "VN": "https://images.unsplash.com/photo-1562802378-063ec186a863?w=600&q=80",
+  "ID": "https://images.unsplash.com/photo-1562802378-063ec186a863?w=600&q=80",
+  // أوروبا
+  "IT": "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&q=80",
+  "FR": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&q=80",
+  "ES": "https://images.unsplash.com/photo-1529042410759-befb1204b468?w=600&q=80",
+  "GR": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80",
+  "DE": "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=600&q=80",
+  // أمريكا
+  "US": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&q=80",
+  "MX": "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=600&q=80",
+  "BR": "https://images.unsplash.com/photo-1558030006-450675393462?w=600&q=80",
+  // أفريقيا
+  "NG": "https://images.unsplash.com/photo-1543826173-1beeb97525d8?w=600&q=80",
+  "ET": "https://images.unsplash.com/photo-1543826173-1beeb97525d8?w=600&q=80",
+  "ZA": "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=600&q=80",
+};
+
+// صور خلفيات حسب المنطقة
+const REGION_FALLBACK_IMAGES = {
+  "Asia":          "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=600&q=80",
+  "Europe":        "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&q=80",
+  "Africa":        "https://images.unsplash.com/photo-1541518763669-27fef04b14ea?w=600&q=80",
+  "Americas":      "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=600&q=80",
+  "Oceania":       "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&q=80",
+  "North America": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&q=80",
+  "South America": "https://images.unsplash.com/photo-1558030006-450675393462?w=600&q=80",
+};
+
+// صور متنوعة لأنواع الطعام المختلفة (fallback)
+const FOOD_CATEGORY_FALLBACK = [
+  "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=600&q=80",  // curry
+  "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600&q=80",    // soup
+  "https://images.unsplash.com/photo-1529042410759-befb1204b468?w=600&q=80", // grilled
+  "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80", // salad
+  "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=600&q=80", // rice
+  "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&q=80", // pizza
+  "https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=600&q=80", // sushi
+  "https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=600&q=80", // dessert
+  "https://images.unsplash.com/photo-1598103442097-8b74394b95c3?w=600&q=80", // chicken
+  "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&q=80", // bread
+  "https://images.unsplash.com/photo-1534939561126-855b8675edd7?w=600&q=80", // stew
+  "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&q=80", // burger
+  "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=600&q=80", // pasta
+  "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=600&q=80", // fish
+  "https://images.unsplash.com/photo-1543826173-1beeb97525d8?w=600&q=80",    // african
+  "https://images.unsplash.com/photo-1541518763669-27fef04b14ea?w=600&q=80", // tagine
 ];
 
 /**
- * Hash فريد لكل وصفة
+ * الحصول على صورة حقيقية للوجبة
  */
-function hashSeed(str) {
-  let h = 0x811c9dc5;
-  for (let i = 0; i < str.length; i++) {
-    h ^= str.charCodeAt(i);
-    h = (h * 0x01000193) >>> 0;
+function getFoodImage(recipe, countryCode) {
+  const titleEn = recipe.title_en || '';
+
+  // 1. البحث المباشر في قاعدة البيانات
+  if (FOOD_IMAGES[titleEn]) {
+    return FOOD_IMAGES[titleEn];
   }
-  return h;
-}
 
-/**
- * رسم شكل طعام SVG جميل ومفصّل
- * كل وجبة تحصل على شكل مختلف بناءً على الـ seed
- */
-function drawFoodArt(seed, cx, cy, pal) {
-  const { main: c1, accent: c2, hi: c3 } = pal;
-  const shapeType = seed % 20;
-
-  switch (shapeType) {
-    case 0: // طبق أرز مع إضافات
-      return `
-        <ellipse cx="${cx}" cy="${cy+28}" rx="70" ry="20" fill="${c2}" opacity=".35"/>
-        <ellipse cx="${cx}" cy="${cy+20}" rx="68" ry="22" fill="${c1}" opacity=".15"/>
-        <ellipse cx="${cx}" cy="${cy+10}" rx="60" ry="42" fill="${c1}" opacity=".9"/>
-        <ellipse cx="${cx}" cy="${cy-5}" rx="44" ry="28" fill="${c2}" opacity=".55"/>
-        <circle cx="${cx-18}" cy="${cy-8}" r="10" fill="${c3}" opacity=".85"/>
-        <circle cx="${cx+18}" cy="${cy-5}" r="11" fill="${c3}" opacity=".8"/>
-        <circle cx="${cx+2}" cy="${cy+10}" r="9" fill="${c3}" opacity=".75"/>
-        <circle cx="${cx-28}" cy="${cy+5}" r="6" fill="${c1}" opacity=".6"/>
-        <circle cx="${cx+28}" cy="${cy+8}" r="6" fill="${c1}" opacity=".6"/>`;
-
-    case 1: // وعاء حساء بخار
-      return `
-        <ellipse cx="${cx}" cy="${cy+30}" rx="64" ry="18" fill="${c2}" opacity=".3"/>
-        <path d="M${cx-60} ${cy+15} Q${cx-62} ${cy-10} ${cx} ${cy-15} Q${cx+62} ${cy-10} ${cx+60} ${cy+15} Q${cx+55} ${cy+30} ${cx} ${cy+32} Q${cx-55} ${cy+30} ${cx-60} ${cy+15}Z" fill="${c1}" opacity=".9"/>
-        <ellipse cx="${cx}" cy="${cy+15}" rx="56" ry="16" fill="${c2}" opacity=".5"/>
-        <circle cx="${cx-15}" cy="${cy+8}" r="8" fill="${c3}" opacity=".8"/>
-        <circle cx="${cx+15}" cy="${cy+5}" r="7" fill="${c3}" opacity=".8"/>
-        <circle cx="${cx}" cy="${cy+15}" r="9" fill="${c3}" opacity=".7"/>
-        <path d="M${cx-16} ${cy-28} Q${cx-10} ${cy-45} ${cx-6} ${cy-28}" stroke="${c3}" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-        <path d="M${cx+6} ${cy-28} Q${cx+10} ${cy-45} ${cx+16} ${cy-28}" stroke="${c3}" stroke-width="2.5" fill="none" stroke-linecap="round"/>`;
-
-    case 2: // برجر طبقات
-      return `
-        <ellipse cx="${cx}" cy="${cy-28}" rx="52" ry="26" fill="${c1}" opacity=".9"/>
-        <ellipse cx="${cx}" cy="${cy-26}" rx="42" ry="16" fill="${c3}" opacity=".4"/>
-        <rect x="${cx-48}" y="${cy-14}" width="96" height="15" rx="3" fill="${c2}" opacity=".9"/>
-        <rect x="${cx-46}" y="${cy+1}" width="92" height="13" rx="2" fill="${c3}" opacity=".75"/>
-        <rect x="${cx-44}" y="${cy+14}" width="88" height="12" rx="2" fill="${c1}" opacity=".85"/>
-        <ellipse cx="${cx}" cy="${cy+30}" rx="50" ry="20" fill="${c1}" opacity=".9"/>
-        <ellipse cx="${cx}" cy="${cy+30}" rx="38" ry="12" fill="${c2}" opacity=".35"/>`;
-
-    case 3: // بيتزا دائرية
-      return `
-        <circle cx="${cx}" cy="${cy}" r="60" fill="${c2}" opacity=".9"/>
-        <circle cx="${cx}" cy="${cy}" r="52" fill="${c1}" opacity=".9"/>
-        <circle cx="${cx-16}" cy="${cy-12}" r="9" fill="${c2}"/>
-        <circle cx="${cx+19}" cy="${cy-16}" r="8" fill="${c2}"/>
-        <circle cx="${cx+8}" cy="${cy+18}" r="10" fill="${c2}"/>
-        <circle cx="${cx-22}" cy="${cy+14}" r="7" fill="${c2}"/>
-        <circle cx="${cx+28}" cy="${cy+8}" r="6" fill="${c3}"/>
-        <circle cx="${cx-5}" cy="${cy-22}" r="7" fill="${c3}"/>
-        <path d="M${cx} ${cy-60} L${cx+58} ${cy+30} L${cx-58} ${cy+30}Z" fill="none" stroke="${c3}" stroke-width="1.5" opacity=".4"/>
-        <circle cx="${cx}" cy="${cy}" r="10" fill="${c2}" opacity=".6"/>`;
-
-    case 4: // سوشي رول قطعة
-      return `
-        <ellipse cx="${cx}" cy="${cy+5}" rx="58" ry="38" fill="#1a0a00" opacity=".9"/>
-        <ellipse cx="${cx}" cy="${cy+5}" rx="46" ry="30" fill="white" opacity=".95"/>
-        <ellipse cx="${cx}" cy="${cy+5}" rx="32" ry="20" fill="${c1}" opacity=".9"/>
-        <ellipse cx="${cx}" cy="${cy+5}" rx="16" ry="10" fill="${c2}" opacity=".9"/>
-        <ellipse cx="${cx}" cy="${cy+5}" rx="6" ry="4" fill="${c3}" opacity=".9"/>
-        <rect x="${cx-58}" y="${cy+5}" width="116" height="2" fill="rgba(255,255,255,.15)" rx="1"/>
-        <rect x="${cx-2}" y="${cy-33}" width="4" height="76" fill="rgba(255,255,255,.08)" rx="2"/>`;
-
-    case 5: // تاكو نصف دائرة
-      return `
-        <path d="M${cx-65} ${cy+25} Q${cx-65} ${cy-40} ${cx} ${cy-50} Q${cx+65} ${cy-40} ${cx+65} ${cy+25}Z" fill="${c1}" opacity=".9"/>
-        <ellipse cx="${cx}" cy="${cy+25}" rx="65" ry="16" fill="${c2}" opacity=".6"/>
-        <circle cx="${cx-28}" cy="${cy+8}" r="10" fill="${c3}" opacity=".85"/>
-        <circle cx="${cx+28}" cy="${cy+5}" r="10" fill="${c3}" opacity=".85"/>
-        <circle cx="${cx}" cy="${cy-2}" r="11" fill="${c3}" opacity=".8"/>
-        <circle cx="${cx-46}" cy="${cy+18}" r="7" fill="${c2}" opacity=".7"/>
-        <circle cx="${cx+46}" cy="${cy+15}" r="7" fill="${c2}" opacity=".7"/>`;
-
-    case 6: // طاجين مغربي
-      return `
-        <ellipse cx="${cx}" cy="${cy+32}" rx="62" ry="18" fill="${c2}" opacity=".4"/>
-        <ellipse cx="${cx}" cy="${cy+20}" rx="60" ry="22" fill="${c1}" opacity=".9"/>
-        <ellipse cx="${cx}" cy="${cy+20}" rx="48" ry="15" fill="${c2}" opacity=".45"/>
-        <path d="M${cx-38} ${cy+18} Q${cx-35} ${cy-30} ${cx} ${cy-55} Q${cx+35} ${cy-30} ${cx+38} ${cy+18}Z" fill="${c2}" opacity=".9"/>
-        <path d="M${cx-25} ${cy+12} Q${cx-22} ${cy-18} ${cx} ${cy-38} Q${cx+22} ${cy-18} ${cx+25} ${cy+12}Z" fill="${c1}" opacity=".5"/>
-        <circle cx="${cx}" cy="${cy-55}" r="6" fill="${c3}"/>`;
-
-    case 7: // رامن وعاء
-      return `
-        <ellipse cx="${cx}" cy="${cy+25}" rx="62" ry="18" fill="${c2}" opacity=".35"/>
-        <path d="M${cx-58} ${cy+10} Q${cx-60} ${cy-20} ${cx} ${cy-25} Q${cx+60} ${cy-20} ${cx+58} ${cy+10} Q${cx+55} ${cy+30} ${cx} ${cy+32} Q${cx-55} ${cy+30} ${cx-58} ${cy+10}Z" fill="${c1}" opacity=".9"/>
-        <path d="M${cx-50} ${cy+5} Q${cx-30} ${cy-8} ${cx-10} ${cy+5} Q${cx+10} ${cy+15} ${cx+35} ${cy}" stroke="${c2}" stroke-width="4" fill="none" stroke-linecap="round"/>
-        <path d="M${cx-45} ${cy+12} Q${cx-20} ${cy-2} ${cx+5} ${cy+12} Q${cx+25} ${cy+22} ${cx+45} ${cy+10}" stroke="${c3}" stroke-width="3" fill="none" stroke-linecap="round"/>
-        <circle cx="${cx+38}" cy="${cy-5}" r="10" fill="${c3}" opacity=".8"/>
-        <circle cx="${cx-38}" cy="${cy+2}" r="8" fill="${c3}" opacity=".7"/>`;
-
-    case 8: // حلويات/كيكة
-      return `
-        <rect x="${cx-50}" y="${cy+10}" width="100" height="32" rx="10" fill="${c1}" opacity=".9"/>
-        <ellipse cx="${cx}" cy="${cy+10}" rx="50" ry="14" fill="${c2}" opacity=".9"/>
-        <rect x="${cx-36}" y="${cy-25}" width="72" height="37" rx="10" fill="${c1}" opacity=".85"/>
-        <ellipse cx="${cx}" cy="${cy-25}" rx="36" ry="11" fill="${c3}" opacity=".9"/>
-        <rect x="${cx-18}" y="${cy-52}" width="36" height="29" rx="8" fill="${c1}" opacity=".8"/>
-        <ellipse cx="${cx}" cy="${cy-52}" rx="18" ry="8" fill="${c2}" opacity=".9"/>
-        <line x1="${cx}" y1="${cy-65}" x2="${cx}" y2="${cy-78}" stroke="${c3}" stroke-width="3" stroke-linecap="round"/>
-        <ellipse cx="${cx}" cy="${cy-80}" rx="6" ry="9" fill="${c3}"/>`;
-
-    case 9: // كباب / مشوي
-      return `
-        <rect x="${cx-62}" y="${cy-6}" width="124" height="12" rx="6" fill="${c2}" opacity=".6"/>
-        <circle cx="${cx-42}" cy="${cy}" r="14" fill="${c1}" opacity=".9"/>
-        <circle cx="${cx-14}" cy="${cy}" r="13" fill="${c3}" opacity=".85"/>
-        <circle cx="${cx+14}" cy="${cy}" r="14" fill="${c1}" opacity=".9"/>
-        <circle cx="${cx+42}" cy="${cy}" r="13" fill="${c3}" opacity=".85"/>
-        <circle cx="${cx-42}" cy="${cy}" r="7" fill="${c2}" opacity=".6"/>
-        <circle cx="${cx-14}" cy="${cy}" r="6" fill="${c2}" opacity=".6"/>
-        <circle cx="${cx+14}" cy="${cy}" r="7" fill="${c2}" opacity=".6"/>
-        <circle cx="${cx+42}" cy="${cy}" r="6" fill="${c2}" opacity=".6"/>
-        <ellipse cx="${cx}" cy="${cy+22}" rx="60" ry="10" fill="${c2}" opacity=".2"/>`;
-
-    case 10: // سلطة في طبق
-      return `
-        <circle cx="${cx}" cy="${cy+5}" r="60" fill="${c1}" opacity=".12"/>
-        <circle cx="${cx}" cy="${cy+5}" r="52" fill="${c2}" opacity=".9"/>
-        <circle cx="${cx}" cy="${cy+5}" r="42" fill="${c1}" opacity=".7"/>
-        <circle cx="${cx-18}" cy="${cy-10}" r="13" fill="#4ade80" opacity=".9"/>
-        <circle cx="${cx+20}" cy="${cy-8}" r="11" fill="#ef4444" opacity=".9"/>
-        <circle cx="${cx+5}" cy="${cy+18}" r="14" fill="#fde047" opacity=".85"/>
-        <circle cx="${cx-20}" cy="${cy+14}" r="10" fill="#fb923c" opacity=".85"/>
-        <circle cx="${cx+28}" cy="${cy+12}" r="9" fill="#86efac" opacity=".8"/>
-        <circle cx="${cx-5}" cy="${cy-22}" r="8" fill="white" opacity=".6"/>`;
-
-    case 11: // خبز تقليدي
-      return `
-        <ellipse cx="${cx}" cy="${cy+5}" rx="68" ry="36" fill="${c1}" opacity=".9"/>
-        <ellipse cx="${cx}" cy="${cy+5}" rx="56" ry="26" fill="${c2}" opacity=".4"/>
-        <path d="M${cx-50} ${cy+2} Q${cx-30} ${cy-22} ${cx} ${cy-25} Q${cx+30} ${cy-22} ${cx+50} ${cy+2}" stroke="${c3}" stroke-width="3" fill="none" opacity=".7"/>
-        <path d="M${cx-30} ${cy+12} Q${cx} ${cy} ${cx+30} ${cy+12}" stroke="${c3}" stroke-width="2.5" fill="none" opacity=".5"/>
-        <circle cx="${cx-25}" cy="${cy+12}" r="5" fill="${c3}" opacity=".6"/>
-        <circle cx="${cx+25}" cy="${cy+12}" r="5" fill="${c3}" opacity=".6"/>
-        <circle cx="${cx}" cy="${cy+15}" r="4" fill="${c3}" opacity=".5"/>
-        <ellipse cx="${cx}" cy="${cy+30}" rx="55" ry="12" fill="${c2}" opacity=".3"/>`;
-
-    case 12: // أيس كريم
-      return `
-        <polygon points="${cx},${cy+68} ${cx-30},${cy+14} ${cx+30},${cy+14}" fill="${c2}" opacity=".9"/>
-        <rect x="${cx-30}" y="${cy-20}" width="60" height="36" rx="6" fill="${c3}" opacity=".9"/>
-        <ellipse cx="${cx}" cy="${cy-20}" rx="30" ry="22" fill="${c1}" opacity=".9"/>
-        <ellipse cx="${cx}" cy="${cy-28}" rx="20" ry="14" fill="${c2}" opacity=".6"/>
-        <circle cx="${cx-10}" cy="${cy-15}" r="6" fill="${c3}" opacity=".7"/>
-        <circle cx="${cx+12}" cy="${cy-18}" r="5" fill="${c3}" opacity=".7"/>
-        <ellipse cx="${cx+8}" cy="${cy-25}" rx="4" ry="3" fill="white" opacity=".5"/>`;
-
-    case 13: // كسكس
-      return `
-        <ellipse cx="${cx}" cy="${cy+25}" rx="62" ry="20" fill="${c2}" opacity=".4"/>
-        <ellipse cx="${cx}" cy="${cy+8}" rx="58" ry="44" fill="${c1}" opacity=".9"/>
-        <ellipse cx="${cx}" cy="${cy-5}" rx="44" ry="30" fill="${c2}" opacity=".5"/>
-        <circle cx="${cx-20}" cy="${cy-8}" r="7" fill="${c3}" opacity=".85"/>
-        <circle cx="${cx+20}" cy="${cy-6}" r="7" fill="${c3}" opacity=".85"/>
-        <circle cx="${cx}" cy="${cy+8}" r="8" fill="${c3}" opacity=".8"/>
-        <circle cx="${cx-35}" cy="${cy+5}" r="5" fill="${c3}" opacity=".65"/>
-        <circle cx="${cx+35}" cy="${cy+7}" r="5" fill="${c3}" opacity=".65"/>
-        <circle cx="${cx+10}" cy="${cy-22}" r="4" fill="${c3}" opacity=".6"/>`;
-
-    case 14: // شوكولاتة
-      return `
-        <rect x="${cx-56}" y="${cx-30}" width="112" height="56" rx="12" fill="${c1}" opacity=".9"/>
-        <rect x="${cx-56}" y="${cy-30}" width="112" height="56" rx="12" fill="${c1}" opacity=".9"/>
-        <line x1="${cx-56}" y1="${cy-2}" x2="${cx+56}" y2="${cy-2}" stroke="${c2}" stroke-width="2" opacity=".5"/>
-        <line x1="${cx-18}" y1="${cy-30}" x2="${cx-18}" y2="${cy+26}" stroke="${c2}" stroke-width="2" opacity=".5"/>
-        <line x1="${cx+18}" y1="${cy-30}" x2="${cx+18}" y2="${cy+26}" stroke="${c2}" stroke-width="2" opacity=".5"/>
-        <rect x="${cx-50}" y="${cy-24}" width="30" height="20" rx="5" fill="${c2}" opacity=".3"/>
-        <rect x="${cx-16}" y="${cy-24}" width="32" height="20" rx="5" fill="${c3}" opacity=".3"/>
-        <rect x="${cx+20}" y="${cy-24}" width="30" height="20" rx="5" fill="${c2}" opacity=".3"/>
-        <rect x="${cx-50}" y="${cy+6}" width="30" height="18" rx="5" fill="${c3}" opacity=".3"/>
-        <rect x="${cx-16}" y="${cy+6}" width="32" height="18" rx="5" fill="${c2}" opacity=".3"/>
-        <rect x="${cx+20}" y="${cy+6}" width="30" height="18" rx="5" fill="${c3}" opacity=".3"/>`;
-
-    case 15: // سمكة مشوية
-      return `
-        <ellipse cx="${cx-5}" cy="${cy}" rx="58" ry="30" fill="${c1}" opacity=".9"/>
-        <path d="M${cx+53} ${cy} L${cx+75} ${cy-22} L${cx+82} ${cy} L${cx+75} ${cy+22}Z" fill="${c1}" opacity=".85"/>
-        <circle cx="${cx-30}" cy="${cy-6}" r="8" fill="${c2}"/>
-        <circle cx="${cx-33}" cy="${cy-8}" r="4" fill="white" opacity=".9"/>
-        <path d="M${cx-12} ${cy-22} Q${cx+18} ${cy+2} ${cx-12} ${cy+22}" stroke="${c2}" stroke-width="2" fill="none"/>
-        <path d="M${cx+8} ${cy-18} Q${cx+32} ${cy} ${cx+8} ${cy+18}" stroke="${c2}" stroke-width="2" fill="none"/>
-        <ellipse cx="${cx}" cy="${cy+40}" rx="52" ry="10" fill="${c3}" opacity=".25"/>`;
-
-    case 16: // فلافل كرات
-      return `
-        <circle cx="${cx}" cy="${cy-18}" r="22" fill="${c1}" opacity=".9"/>
-        <circle cx="${cx-28}" cy="${cy+14}" r="20" fill="${c1}" opacity=".9"/>
-        <circle cx="${cx+28}" cy="${cy+14}" r="20" fill="${c1}" opacity=".9"/>
-        <circle cx="${cx}" cy="${cy-18}" r="13" fill="${c2}" opacity=".6"/>
-        <circle cx="${cx-28}" cy="${cy+14}" r="12" fill="${c2}" opacity=".6"/>
-        <circle cx="${cx+28}" cy="${cy+14}" r="12" fill="${c2}" opacity=".6"/>
-        <circle cx="${cx}" cy="${cy-20}" r="5" fill="${c3}" opacity=".7"/>
-        <circle cx="${cx-30}" cy="${cy+12}" r="5" fill="${c3}" opacity=".7"/>
-        <circle cx="${cx+30}" cy="${cy+12}" r="5" fill="${c3}" opacity=".7"/>
-        <ellipse cx="${cx}" cy="${cy+40}" rx="56" ry="10" fill="${c2}" opacity=".2"/>`;
-
-    case 17: // باستا في طبق
-      return `
-        <circle cx="${cx}" cy="${cy+5}" r="56" fill="${c1}" opacity=".9"/>
-        <circle cx="${cx}" cy="${cy+5}" r="44" fill="${c2}" opacity=".35"/>
-        <path d="M${cx-38} ${cy-8} Q${cx-20} ${cy+12} ${cx-5} ${cy-5} Q${cx+12} ${cy-20} ${cx+28} ${cy-5} Q${cx+42} ${cy+8} ${cx+38} ${cy-8}" stroke="${c2}" stroke-width="5" fill="none" stroke-linecap="round"/>
-        <path d="M${cx-30} ${cy+8} Q${cx-14} ${cy-6} ${cx+8} ${cy+8} Q${cx+22} ${cy+18} ${cx+36} ${cy+5}" stroke="${c3}" stroke-width="4" fill="none" stroke-linecap="round"/>
-        <path d="M${cx-35} ${cy+20} Q${cx-15} ${cy+6} ${cx+10} ${cy+20}" stroke="${c2}" stroke-width="3.5" fill="none" stroke-linecap="round" opacity=".7"/>
-        <circle cx="${cx}" cy="${cy-10}" r="9" fill="${c3}" opacity=".8"/>`;
-
-    case 18: // حمص مع زيت
-      return `
-        <ellipse cx="${cx}" cy="${cy+15}" rx="62" ry="34" fill="${c1}" opacity=".9"/>
-        <ellipse cx="${cx-8}" cy="${cy+8}" rx="46" ry="26" fill="${c2}" opacity=".6"/>
-        <circle cx="${cx+20}" cy="${cy+18}" r="10" fill="${c3}" opacity=".8"/>
-        <path d="M${cx-22} ${cy+2} Q${cx-5} ${cy+22} ${cx+18} ${cy+8}" stroke="${c3}" stroke-width="3" fill="none" stroke-linecap="round"/>
-        <circle cx="${cx-18}" cy="${cy+25}" r="5" fill="${c1}" opacity=".9"/>
-        <circle cx="${cx+35}" cy="${cy+22}" r="4" fill="${c1}" opacity=".9"/>
-        <ellipse cx="${cx}" cy="${cy+38}" rx="50" ry="10" fill="${c2}" opacity=".25"/>`;
-
-    default: // طبق ملكي زخرفي
-      return `
-        <circle cx="${cx}" cy="${cy}" r="62" fill="none" stroke="${c2}" stroke-width="3" opacity=".4"/>
-        <circle cx="${cx}" cy="${cy}" r="54" fill="${c1}" opacity=".9"/>
-        <circle cx="${cx}" cy="${cy}" r="40" fill="${c2}" opacity=".55"/>
-        <circle cx="${cx}" cy="${cy}" r="28" fill="${c1}" opacity=".7"/>
-        <polygon points="${cx},${cy-22} ${cx+7},${cy-7} ${cx+24},${cy-7} ${cx+11},${cy+4} ${cx+16},${cy+22} ${cx},${cy+13} ${cx-16},${cy+22} ${cx-11},${cy+4} ${cx-24},${cy-7} ${cx-7},${cy-7}" fill="${c3}" opacity=".9"/>
-        <circle cx="${cx}" cy="${cy}" r="8" fill="${c2}"/>`;
+  // 2. البحث الجزئي
+  const lowerTitle = titleEn.toLowerCase();
+  for (const [key, url] of Object.entries(FOOD_IMAGES)) {
+    if (lowerTitle.includes(key.toLowerCase()) || key.toLowerCase().includes(lowerTitle)) {
+      return url;
+    }
   }
+
+  // 3. كلمات مفتاحية في اسم الوجبة
+  if (lowerTitle.includes('rice') || lowerTitle.includes('biryani') || lowerTitle.includes('pilaf'))
+    return "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=600&q=80";
+  if (lowerTitle.includes('soup') || lowerTitle.includes('stew') || lowerTitle.includes('broth'))
+    return "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600&q=80";
+  if (lowerTitle.includes('chicken') || lowerTitle.includes('poultry'))
+    return "https://images.unsplash.com/photo-1598103442097-8b74394b95c3?w=600&q=80";
+  if (lowerTitle.includes('fish') || lowerTitle.includes('seafood') || lowerTitle.includes('salmon'))
+    return "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=600&q=80";
+  if (lowerTitle.includes('pizza'))
+    return "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&q=80";
+  if (lowerTitle.includes('pasta') || lowerTitle.includes('noodle') || lowerTitle.includes('spaghetti'))
+    return "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=600&q=80";
+  if (lowerTitle.includes('sushi') || lowerTitle.includes('japanese'))
+    return "https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=600&q=80";
+  if (lowerTitle.includes('salad'))
+    return "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80";
+  if (lowerTitle.includes('bread') || lowerTitle.includes('flatbread') || lowerTitle.includes('naan'))
+    return "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&q=80";
+  if (lowerTitle.includes('grill') || lowerTitle.includes('bbq') || lowerTitle.includes('kebab') || lowerTitle.includes('skewer'))
+    return "https://images.unsplash.com/photo-1529042410759-befb1204b468?w=600&q=80";
+  if (lowerTitle.includes('curry') || lowerTitle.includes('masala') || lowerTitle.includes('tikka'))
+    return "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=600&q=80";
+  if (lowerTitle.includes('dessert') || lowerTitle.includes('cake') || lowerTitle.includes('sweet') || lowerTitle.includes('pudding'))
+    return "https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=600&q=80";
+  if (lowerTitle.includes('taco') || lowerTitle.includes('burrito') || lowerTitle.includes('enchilada') || lowerTitle.includes('mexican'))
+    return "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=600&q=80";
+  if (lowerTitle.includes('dumpling') || lowerTitle.includes('gyoza') || lowerTitle.includes('wonton'))
+    return "https://images.unsplash.com/photo-1563245372-f21724e3856d?w=600&q=80";
+  if (lowerTitle.includes('burger') || lowerTitle.includes('sandwich'))
+    return "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&q=80";
+  if (lowerTitle.includes('breakfast'))
+    return "https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?w=600&q=80";
+  if (lowerTitle.includes('ramen') || lowerTitle.includes('udon') || lowerTitle.includes('pho'))
+    return "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600&q=80";
+  if (lowerTitle.includes('meat') || lowerTitle.includes('beef') || lowerTitle.includes('lamb') || lowerTitle.includes('roast'))
+    return "https://images.unsplash.com/photo-1544025162-d76694265947?w=600&q=80";
+  if (lowerTitle.includes('tagine') || lowerTitle.includes('couscous') || lowerTitle.includes('moroccan'))
+    return "https://images.unsplash.com/photo-1541518763669-27fef04b14ea?w=600&q=80";
+  if (lowerTitle.includes('dal') || lowerTitle.includes('lentil') || lowerTitle.includes('dhal'))
+    return "https://images.unsplash.com/photo-1548943487-a2e4e43b4853?w=600&q=80";
+
+  // 4. Fallback عشوائي حسب كود الدولة
+  const seed = countryCode.charCodeAt(0) + countryCode.charCodeAt(1);
+  return FOOD_CATEGORY_FALLBACK[seed % FOOD_CATEGORY_FALLBACK.length];
 }
 
 /**
- * توليد خلفية SVG احترافية
+ * الحصول على صورة خلفية لبطاقة الدولة
  */
-function makeBg(seed, pal) {
-  const { bg: [col1, col2] } = pal;
-  const W = 480, H = 320;
-  const r1x = 80 + (seed % 120);
-  const r1y = 50 + ((seed >> 3) % 80);
-  const r2x = 320 + ((seed >> 5) % 120);
-  const r2y = 220 + ((seed >> 7) % 80);
-  const c1 = pal.main;
-  const c2 = pal.accent;
-  return `<defs>
-    <linearGradient id="gbg${seed}" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="${col1}"/>
-      <stop offset="100%" stop-color="${col2}"/>
-    </linearGradient>
-    <filter id="gblur${seed}"><feGaussianBlur stdDeviation="22"/></filter>
-    <filter id="gblur2${seed}"><feGaussianBlur stdDeviation="14"/></filter>
-  </defs>
-  <rect width="${W}" height="${H}" fill="url(#gbg${seed})"/>
-  <circle cx="${r1x}" cy="${r1y}" r="130" fill="${c1}" opacity=".12" filter="url(#gblur${seed})"/>
-  <circle cx="${r2x}" cy="${r2y}" r="110" fill="${c2}" opacity=".1" filter="url(#gblur${seed})"/>
-  <circle cx="${W/2}" cy="${H/2}" r="90" fill="${pal.hi}" opacity=".06" filter="url(#gblur2${seed})"/>`;
+function getCountryBgImage(countryCode, region, recipes) {
+  // صورة خاصة بالدولة
+  if (COUNTRY_BG_IMAGES[countryCode]) {
+    return COUNTRY_BG_IMAGES[countryCode];
+  }
+  // أول وصفة لها صورة حقيقية
+  if (recipes && recipes.length > 0) {
+    const img = getFoodImage(recipes[0], countryCode);
+    if (img) return img;
+  }
+  // fallback حسب المنطقة
+  return REGION_FALLBACK_IMAGES[region] ||
+    "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&q=80";
 }
 
 /**
- * توليد صورة SVG كاملة لكل وجبة
+ * تحميل الصور مع lazy loading وتأثير تحميل ناعم
  */
-function generateFoodSVG(recipe, countryCode, recipeIndex) {
-  const W = 480, H = 320;
-  const key = (recipe.id || '') + countryCode + recipeIndex;
-  const seed = hashSeed(key + (recipe.title_en || ''));
-  const palIdx = seed % PALETTES.length;
-  const pal = PALETTES[palIdx];
-
-  const bg = makeBg(seed, pal);
-  const cx = W / 2;
-  const cy = H / 2 - 18;
-  const art = drawFoodArt(seed, cx, cy, pal);
-
-  // حساب نص العنوان (اقتصاره إن كان طويلاً)
-  const labelAr = (recipe.title_ar || '').slice(0, 24);
-  const labelEn = (recipe.title_en || '').slice(0, 28);
-
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">
-  ${bg}
-
-  <!-- Food Art -->
-  <g transform="translate(0,0)">${art}</g>
-
-  <!-- Bottom bar -->
-  <rect x="0" y="${H-64}" width="${W}" height="64" fill="rgba(0,0,0,0.7)"/>
-  <rect x="0" y="${H-64}" width="${W}" height="1" fill="${pal.main}" opacity="0.5"/>
-
-  <!-- Texts -->
-  <text x="${W/2}" y="${H-38}" fill="white" font-size="17" font-weight="700"
-    text-anchor="middle" font-family="Tajawal,Segoe UI,Arial"
-    dominant-baseline="middle">${escXML(labelAr)}</text>
-  <text x="${W/2}" y="${H-16}" fill="${pal.accent}" font-size="11.5"
-    text-anchor="middle" font-family="Segoe UI,Arial"
-    dominant-baseline="middle" opacity="0.85">${escXML(labelEn)}</text>
-
-  <!-- Top-right badge -->
-  <rect x="${W-70}" y="10" width="58" height="22" rx="11" fill="${pal.main}" opacity="0.2"/>
-  <rect x="${W-70}" y="10" width="58" height="22" rx="11" fill="none" stroke="${pal.main}" stroke-width="1" opacity="0.4"/>
-  <text x="${W-41}" y="21" fill="${pal.hi}" font-size="9.5" font-weight="600"
-    text-anchor="middle" font-family="Segoe UI,Arial" dominant-baseline="middle">${escXML(countryCode)}</text>
-</svg>`;
-
-  return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
-}
-
-function escXML(s) {
-  return String(s || '').replace(/[<>&'"]/g, c =>
-    ({ '<':'&lt;','>':'&gt;','&':'&amp;',"'":'&apos;','"':'&quot;' }[c]));
+function loadImageLazy(img) {
+  img.classList.add('img-loading');
+  const src = img.src || img.dataset.src;
+  if (img.dataset.src) {
+    img.src = img.dataset.src;
+  }
+  img.addEventListener('load', () => {
+    img.classList.remove('img-loading');
+    img.classList.add('img-loaded');
+  });
+  img.addEventListener('error', () => {
+    img.classList.remove('img-loading');
+    img.src = 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&q=80';
+  });
 }
 
 /* ══════════════════════════════════════════════
@@ -420,13 +583,13 @@ function toast(msg, ms = 2800) {
    Particles
    ══════════════════════════════════════════════ */
 function spawnParticles() {
-  for (let i = 0; i < 16; i++) {
+  for (let i = 0; i < 12; i++) {
     const p = document.createElement('div');
     p.className = 'ptcl';
     const sz = Math.random() * 80 + 24;
     const colors = [
-      'rgba(124,156,255,.12)', 'rgba(66,223,200,.10)',
-      'rgba(255,140,105,.08)', 'rgba(199,125,255,.10)'
+      'rgba(212,100,50,.07)', 'rgba(230,160,30,.06)',
+      'rgba(180,60,30,.05)', 'rgba(200,140,40,.06)'
     ];
     p.style.cssText = `
       width:${sz}px; height:${sz}px;
@@ -474,25 +637,28 @@ function buildSidebar() {
     });
     return b;
   };
-  EL.regionList.appendChild(mkRBtn('🌐 كل المناطق', '', S.countries.length));
+  EL.regionList.appendChild(mkRBtn('كل المناطق', '', S.countries.length));
 
-  const regionEmoji = {
-    Asia: '🌏', Europe: '🌍', Africa: '🌍',
-    Americas: '🌎', Oceania: '🏝️',
-    'North America': '🌎', 'South America': '🌎'
+  const regionNames = {
+    Asia: 'آسيا', Europe: 'أوروبا', Africa: 'أفريقيا',
+    Americas: 'الأمريكتان', Oceania: 'أوقيانوسيا',
+    'North America': 'أمريكا الشمالية', 'South America': 'أمريكا الجنوبية'
   };
   Object.entries(rc).sort((a, b) => b[1] - a[1]).forEach(([r, n]) => {
-    EL.regionList.appendChild(mkRBtn(`${regionEmoji[r] || '🗺️'} ${r}`, r, n));
+    EL.regionList.appendChild(mkRBtn(regionNames[r] || r, r, n));
   });
 
   // Popular
   const pop = [...S.countries].sort((a, b) => b.recipes.length - a.recipes.length).slice(0, 6);
   EL.popularList.innerHTML = '';
   pop.forEach(c => {
+    const imgUrl = getCountryBgImage(c.code, c.region, c.recipes);
     const d = document.createElement('div');
     d.className = 'pop-item';
     d.innerHTML = `
-      <div class="pop-flag">${c.flag}</div>
+      <div class="pop-img-wrap">
+        <img src="${imgUrl}" alt="${c.name_ar}" loading="lazy" class="pop-img" onerror="this.src='https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=100&q=70'"/>
+      </div>
       <div class="pop-info">
         <div class="pop-name">${c.name_ar}</div>
         <div class="pop-cnt">${c.recipes.length} وصفة</div>
@@ -507,9 +673,14 @@ function buildSidebar() {
    ══════════════════════════════════════════════ */
 function buildRegionOptions() {
   const regions = [...new Set(S.countries.map(c => c.region).filter(Boolean))].sort();
+  const regionNames = {
+    Asia: 'آسيا', Europe: 'أوروبا', Africa: 'أفريقيا',
+    Americas: 'الأمريكتان', Oceania: 'أوقيانوسيا',
+    'North America': 'أمريكا الشمالية', 'South America': 'أمريكا الجنوبية'
+  };
   regions.forEach(r => {
     const o = document.createElement('option');
-    o.value = r; o.textContent = r;
+    o.value = r; o.textContent = regionNames[r] || r;
     EL.regionFilter.appendChild(o);
   });
 }
@@ -578,19 +749,39 @@ function renderGrid(append) {
 }
 
 /* ══════════════════════════════════════════════
-   Build Card
+   Build Card — بطاقة الدولة مع صورة حقيقية
    ══════════════════════════════════════════════ */
 function buildCard(c) {
   const n = EL.tpl.content.firstElementChild.cloneNode(true);
-  n.querySelector('.ccard-flag-bg').textContent = c.flag;
+  const bgImg = getCountryBgImage(c.code, c.region, c.recipes);
+
+  // صورة خلفية حقيقية للبطاقة عبر background-image
+  const bgDiv = n.querySelector('.ccard-img');
+  bgDiv.style.cssText += `
+    background-image: url('${bgImg}');
+    background-size: cover;
+    background-position: center;
+  `;
+
+  // إخفاء العنصر القديم
+  const oldFlag = n.querySelector('.ccard-flag-bg');
+  if (oldFlag) oldFlag.style.display = 'none';
+
   n.querySelector('.ccard-flag-sm').textContent = c.flag;
   n.querySelector('.ccard-name').textContent = c.name_ar;
   n.querySelector('.ccard-name-en').textContent = c.name_en;
-  n.querySelector('.ccard-region').textContent = `🗺️ ${c.region}${c.subregion ? ' • ' + c.subregion : ''}`;
+
+  const regionNames = {
+    Asia: 'آسيا', Europe: 'أوروبا', Africa: 'أفريقيا',
+    Americas: 'الأمريكتان', Oceania: 'أوقيانوسيا',
+    'North America': 'أمريكا الشمالية', 'South America': 'أمريكا الجنوبية'
+  };
+  n.querySelector('.ccard-region').textContent =
+    `${regionNames[c.region] || c.region}${c.subregion ? ' • ' + c.subregion : ''}`;
   n.querySelector('.ccard-summary').textContent = c.summary_ar || `مطبخ ${c.name_ar}`;
 
   const tags = n.querySelector('.ccard-tags');
-  [`🏛️ ${c.capital || '—'}`, `📖 ${c.recipes.length} وصفة`].forEach((t, i) => {
+  [`${c.capital || '—'}`, `${c.recipes.length} وصفة`].forEach((t, i) => {
     const s = document.createElement('span');
     s.className = 'tag' + (i === 1 ? ' hi' : '');
     s.textContent = t;
@@ -615,23 +806,40 @@ function diffClass(d) {
   return 'hard';
 }
 
+function escXML(s) {
+  return String(s || '').replace(/[<>&'"]/g, c =>
+    ({ '<':'&lt;','>':'&gt;','&':'&amp;',"'":'&apos;','"':'&quot;' }[c]));
+}
+
 /* ══════════════════════════════════════════════
-   Open Country Modal
+   Open Country Modal — مع صور حقيقية
    ══════════════════════════════════════════════ */
 function openModal(code) {
   const c = S.countries.find(x => x.code === code);
   if (!c) return;
 
+  const regionNames = {
+    Asia: 'آسيا', Europe: 'أوروبا', Africa: 'أفريقيا',
+    Americas: 'الأمريكتان', Oceania: 'أوقيانوسيا',
+    'North America': 'أمريكا الشمالية', 'South America': 'أمريكا الجنوبية'
+  };
+
   const recipesHTML = c.recipes.map((r, idx) => {
-    const imgSrc = generateFoodSVG(r, c.code, idx);
+    // صورة حقيقية لكل وجبة
+    const imgSrc = getFoodImage(r, c.code);
     const dc = diffClass(r.difficulty);
     return `
     <div class="rcard" style="animation-delay:${idx * 0.05}s">
       <div class="rcard-img">
-        <img class="rcard-cover" src="${imgSrc}" alt="${escXML(r.title_ar)}" loading="lazy"/>
+        <img class="rcard-cover" src="${imgSrc}"
+          alt="${escXML(r.title_ar)}" loading="lazy"
+          onerror="this.src='https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&q=80'"/>
         <div class="rcard-badges">
           <span class="diff-badge ${dc}">${r.difficulty || 'سهل'}</span>
-          <span class="time-badge">⏱ ${r.time_minutes} د</span>
+          <span class="time-badge">${r.time_minutes} د</span>
+        </div>
+        <div class="rcard-overlay">
+          <span class="rcard-title-overlay">${escXML(r.title_ar)}</span>
         </div>
       </div>
       <div class="rcard-body">
@@ -639,54 +847,57 @@ function openModal(code) {
         <div class="rcard-title-en">${escXML(r.title_en)}</div>
         <div class="rcard-desc">${escXML(r.description_ar)}</div>
         <div class="rcard-stats">
-          <span class="rstat">⏱ ${r.time_minutes} دقيقة</span>
-          <span class="rstat">👥 ${r.servings} حصص</span>
-          <span class="rstat">📊 ${r.difficulty || 'سهل'}</span>
+          <span class="rstat"><i class="ri-time"></i> ${r.time_minutes} دقيقة</span>
+          <span class="rstat"><i class="ri-group"></i> ${r.servings} حصص</span>
+          <span class="rstat diff-inline ${dc}">${r.difficulty || 'سهل'}</span>
         </div>
         <div class="rcard-cols">
           <div class="rcol">
-            <h5>🛒 المكوّنات</h5>
+            <h5>المكوّنات</h5>
             <ul>${r.ingredients.map(i => `<li>${escXML(i)}</li>`).join('')}</ul>
           </div>
           <div class="rcol">
-            <h5>👨‍🍳 التحضير</h5>
+            <h5>طريقة التحضير</h5>
             <ol>${r.steps.map(s => `<li>${escXML(s)}</li>`).join('')}</ol>
           </div>
         </div>
         <div class="rcard-links">
-          <a class="rlink" href="${r.links.youtube}" target="_blank" rel="noopener">▶️ يوتيوب</a>
-          <a class="rlink" href="${r.links.google}" target="_blank" rel="noopener">🔍 بحث</a>
-          <a class="rlink" href="${r.links.wikipedia}" target="_blank" rel="noopener">📚 ويكي</a>
+          <a class="rlink yt" href="${r.links.youtube}" target="_blank" rel="noopener">فيديو يوتيوب</a>
+          <a class="rlink gs" href="${r.links.google}" target="_blank" rel="noopener">بحث Google</a>
+          <a class="rlink wp" href="${r.links.wikipedia}" target="_blank" rel="noopener">ويكيبيديا</a>
         </div>
       </div>
     </div>`;
   }).join('');
 
+  // صورة خلفية للهيدر
+  const heroBg = getCountryBgImage(c.code, c.region, c.recipes);
+
   EL.modalContent.innerHTML = `
-    <div class="mhero">
-      <div class="mhero-bg">${c.flag}</div>
+    <div class="mhero" style="--hero-img: url('${heroBg}')">
+      <div class="mhero-bg-photo"></div>
+      <div class="mhero-overlay"></div>
       <div class="mhero-row">
         <div class="mhero-flag">${c.flag}</div>
         <div class="mhero-info">
           <div class="mhero-name">${c.name_ar}</div>
           <div class="mhero-sub">${c.name_en}</div>
           <div class="mhero-tags">
-            <span class="mtag prim">🏛️ ${c.capital || '—'}</span>
-            <span class="mtag">🌐 ${c.region}</span>
-            ${c.subregion ? `<span class="mtag">📍 ${c.subregion}</span>` : ''}
-            <span class="mtag prim">📖 ${c.recipes.length} وصفة</span>
+            <span class="mtag prim">${c.capital || '—'}</span>
+            <span class="mtag">${regionNames[c.region] || c.region}</span>
+            ${c.subregion ? `<span class="mtag">${c.subregion}</span>` : ''}
+            <span class="mtag prim">${c.recipes.length} وصفة</span>
           </div>
         </div>
       </div>
       <div class="mhero-links">
-        <a class="mlink prim" href="${c.search_links.google}" target="_blank" rel="noopener">🔍 أكلات ${c.name_ar}</a>
-        <a class="mlink" href="${c.search_links.youtube}" target="_blank" rel="noopener">▶️ يوتيوب</a>
-        <a class="mlink" href="${c.search_links.wikipedia}" target="_blank" rel="noopener">📚 ويكيبيديا</a>
+        <a class="mlink prim" href="${c.search_links.google}" target="_blank" rel="noopener">أكلات ${c.name_ar}</a>
+        <a class="mlink" href="${c.search_links.youtube}" target="_blank" rel="noopener">يوتيوب</a>
+        <a class="mlink" href="${c.search_links.wikipedia}" target="_blank" rel="noopener">ويكيبيديا</a>
       </div>
     </div>
     <div class="mbody">
       <div class="msec-title">
-        <div class="msec-ico">🍽️</div>
         الوصفات التقليدية
         <span class="msec-cnt">${c.recipes.length} وصفة</span>
       </div>
@@ -723,6 +934,15 @@ async function init() {
     const recipes = S.countries.reduce((n, c) => n + c.recipes.length, 0);
     animCount(EL.cCount, total);
     animCount(EL.rCount, recipes, 1800);
+    // تحديث إحصائيات الـ hero و sidebar
+    const heroC = document.getElementById('countriesCount');
+    const heroR = document.getElementById('recipesCount');
+    const sbC   = document.getElementById('countriesCount2');
+    const sbR   = document.getElementById('recipesCount2');
+    if (heroC) animCount(heroC, total);
+    if (heroR) animCount(heroR, recipes, 1800);
+    if (sbC) animCount(sbC, total);
+    if (sbR) animCount(sbR, recipes, 1800);
     EL.navC.textContent = total.toLocaleString('ar-EG');
     EL.navR.textContent = recipes.toLocaleString('ar-EG');
 
@@ -771,14 +991,14 @@ async function init() {
       const pool = S.filtered.length ? S.filtered : S.countries;
       const item = pool[Math.floor(Math.random() * pool.length)];
       openModal(item.code);
-      toast(`🎲 ${item.name_ar}`);
+      toast(`${item.name_ar} — اكتشاف عشوائي`);
     };
     EL.randomBtn.addEventListener('click', doRandom);
 
     EL.themeBtn.addEventListener('click', () => {
       const isLight = !document.body.classList.contains('light');
       setTheme(isLight);
-      toast(isLight ? '☀️ الوضع النهاري' : '🌙 الوضع الليلي');
+      toast(isLight ? 'الوضع النهاري' : 'الوضع الليلي');
     });
 
     EL.modalClose.addEventListener('click', closeModal);
@@ -799,7 +1019,7 @@ async function init() {
 
   } catch (err) {
     console.error(err);
-    EL.resultsText.textContent = '❌ تعذّر تحميل البيانات';
+    EL.resultsText.textContent = 'تعذّر تحميل البيانات';
     EL.preloader.classList.add('out');
   }
 }
